@@ -12,10 +12,10 @@ from typing import Any, Optional, Union
 import pytoml
 
 
-def _wrap_reader(reader: Callable) -> Callable:
+def _wrap_reader(reader: Callable, default_mode: str = "r") -> Callable:
     def _wrapper(filename, *args, file_kwargs=None, **kwargs):
         if file_kwargs is None:
-            file_kwargs = {"mode": "r"}
+            file_kwargs = {"mode": default_mode}
 
         with open(filename, **file_kwargs) as f:
             return reader(f, *args, **kwargs)
@@ -23,10 +23,10 @@ def _wrap_reader(reader: Callable) -> Callable:
     return _wrapper
 
 
-def _wrap_writer(writer: Callable) -> Callable:
+def _wrap_writer(writer: Callable, default_mode: str = "w") -> Callable:
     def _wrapper(filename, obj, *args, file_kwargs=None, **kwargs):
         if file_kwargs is None:
-            file_kwargs = {"mode": "w"}
+            file_kwargs = {"mode": default_mode}
 
         with open(filename, **file_kwargs) as f:
             writer(obj, f, *args, **kwargs)
@@ -36,8 +36,8 @@ def _wrap_writer(writer: Callable) -> Callable:
 
 read_json = _wrap_reader(json.load)
 write_json = _wrap_writer(json.dump)
-read_pickle = _wrap_reader(pickle.load)
-write_pickle = _wrap_writer(pickle.dump)
+read_pickle = _wrap_reader(pickle.load, default_mode="rb")
+write_pickle = _wrap_writer(pickle.dump, default_mode="wb")
 read_toml = _wrap_reader(pytoml.load)
 write_toml = _wrap_writer(pytoml.dump)
 
