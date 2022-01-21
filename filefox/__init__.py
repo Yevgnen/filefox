@@ -50,6 +50,7 @@ _HANDLERS = {
     ".json": _Handler(read_json, write_json),
     ".pickle": _Handler(read_pickle, write_pickle),
     ".pkl": _Handler(read_pickle, write_pickle),
+    ".toml": _Handler(read_toml, write_toml),
 }
 
 
