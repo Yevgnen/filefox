@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "filefox"
-version = "0.2.0"
+version = "0.3.0"
 description = "Python file toolbox."
 authors = ["Yevgnen Koh <wherejoystarts@gmail.com>"]
 packages = [ { include = "filefox" } ]

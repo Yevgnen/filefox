@@ -83,4 +83,4 @@ def write(
     handler.writer(obj, filename, *args, file_kwargs=file_kwargs, **kwargs)
 
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
