@@ -5,6 +5,7 @@ from __future__ import annotations
 import collections
 import json
 import os
+import pickle
 from collections.abc import Callable, Mapping
 from typing import Any, Optional, Union
 
@@ -33,6 +34,8 @@ def _wrap_writer(writer: Callable) -> Callable:
 
 read_json = _wrap_reader(json.load)
 write_json = _wrap_writer(json.dump)
+read_pickle = _wrap_reader(pickle.load)
+write_pickle = _wrap_writer(pickle.dump)
 
 
 class _Handler(collections.namedtuple("_Handler", ["reader", "writer"])):
@@ -41,6 +44,8 @@ class _Handler(collections.namedtuple("_Handler", ["reader", "writer"])):
 
 _HANDLERS = {
     ".json": _Handler(read_json, write_json),
+    ".pickle": _Handler(read_pickle, write_pickle),
+    ".pkl": _Handler(read_pickle, write_pickle),
 }
 
 
