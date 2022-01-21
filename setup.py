@@ -32,7 +32,9 @@ setup(
         "filefox": ["py.typed"],
     },
     include_package_data=True,
-    install_requires=[],
+    install_requires=[
+        "pytoml",
+    ],
     test_suite="tests",
     zip_safe=False,
 )

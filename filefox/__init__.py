@@ -9,6 +9,8 @@ import pickle
 from collections.abc import Callable, Mapping
 from typing import Any, Optional, Union
 
+import pytoml
+
 
 def _wrap_reader(reader: Callable) -> Callable:
     def _wrapper(filename, *args, file_kwargs=None, **kwargs):
@@ -36,6 +38,8 @@ read_json = _wrap_reader(json.load)
 write_json = _wrap_writer(json.dump)
 read_pickle = _wrap_reader(pickle.load)
 write_pickle = _wrap_writer(pickle.dump)
+read_toml = _wrap_reader(pytoml.load)
+write_toml = _wrap_writer(pytoml.dump)
 
 
 class _Handler(collections.namedtuple("_Handler", ["reader", "writer"])):
