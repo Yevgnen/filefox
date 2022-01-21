@@ -24,7 +24,7 @@ def _wrap_reader(reader: Callable, default_mode: str = "r") -> Callable:
 
 
 def _wrap_writer(writer: Callable, default_mode: str = "w") -> Callable:
-    def _wrapper(filename, obj, *args, file_kwargs=None, **kwargs):
+    def _wrapper(obj, filename, *args, file_kwargs=None, **kwargs):
         if file_kwargs is None:
             file_kwargs = {"mode": default_mode}
 
@@ -68,8 +68,8 @@ def read(
 
 
 def write(
-    filename: Union[str, os.PathLike],
     obj: Any,
+    filename: Union[str, os.PathLike],
     *args: tuple,
     file_kwargs: Optional[Mapping] = None,
     **kwargs: Mapping
@@ -79,7 +79,7 @@ def write(
     if not handler:
         raise NotImplementedError()
 
-    handler.writer(filename, obj, *args, file_kwargs=file_kwargs, **kwargs)
+    handler.writer(obj, filename, *args, file_kwargs=file_kwargs, **kwargs)
 
 
 __version__ = "0.2.0"
