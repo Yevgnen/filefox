@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import bz2
 import collections
+import gzip
 import json
+import lzma
 import os
 import pickle
 from collections.abc import Callable, Mapping
@@ -11,24 +14,37 @@ from typing import Any, Optional, Union
 
 import pytoml
 
+_COMPRESSION = {
+    ".bz2": bz2.open,
+    ".gz": gzip.open,
+    ".xz": lzma.open,
+}
 
-def _wrap_reader(reader: Callable, default_mode: str = "r") -> Callable:
+
+def _get_open_fn(filename):
+    ext = os.path.splitext(filename)[1]
+    open_fn = _COMPRESSION.get(ext, open)
+
+    return open_fn
+
+
+def _wrap_reader(reader: Callable, default_mode: str = "rt") -> Callable:
     def _wrapper(filename, *args, file_kwargs=None, **kwargs):
         if file_kwargs is None:
             file_kwargs = {"mode": default_mode}
 
-        with open(filename, **file_kwargs) as f:
+        with _get_open_fn(filename)(filename, **file_kwargs) as f:
             return reader(f, *args, **kwargs)
 
     return _wrapper
 
 
-def _wrap_writer(writer: Callable, default_mode: str = "w") -> Callable:
+def _wrap_writer(writer: Callable, default_mode: str = "wt") -> Callable:
     def _wrapper(obj, filename, *args, file_kwargs=None, **kwargs):
         if file_kwargs is None:
             file_kwargs = {"mode": default_mode}
 
-        with open(filename, **file_kwargs) as f:
+        with _get_open_fn(filename)(filename, **file_kwargs) as f:
             writer(obj, f, *args, **kwargs)
 
     return _wrapper
@@ -46,7 +62,7 @@ class _Handler(collections.namedtuple("_Handler", ["reader", "writer"])):
     pass
 
 
-_HANDLERS = {
+_FILE_HANDLERS = {
     ".json": _Handler(read_json, write_json),
     ".pickle": _Handler(read_pickle, write_pickle),
     ".pkl": _Handler(read_pickle, write_pickle),
@@ -54,16 +70,36 @@ _HANDLERS = {
 }
 
 
+def _get_handler(filename):
+    basename, compression_ext = os.path.splitext(filename)
+    if not compression_ext:
+        raise ValueError("Unknown file type")
+
+    basename, file_ext = os.path.splitext(basename)
+    if not file_ext and compression_ext not in _COMPRESSION:
+        file_ext = compression_ext
+        compression_ext = ""
+
+    if compression_ext and compression_ext not in _COMPRESSION:
+        raise NotImplementedError()
+
+    if file_ext and file_ext not in _FILE_HANDLERS:
+        raise NotImplementedError()
+
+    handler = _FILE_HANDLERS.get(file_ext)
+    if not handler:
+        raise NotImplementedError()
+
+    return handler
+
+
 def read(
     filename: Union[str, os.PathLike],
     *args: tuple,
     file_kwargs: Optional[Mapping] = None,
-    **kwargs: Mapping
+    **kwargs: Mapping,
 ) -> Any:
-    ext = os.path.splitext(filename)[1]
-    handler = _HANDLERS.get(ext)
-    if not handler:
-        raise NotImplementedError()
+    handler = _get_handler(filename)
 
     return handler.reader(filename, *args, file_kwargs=file_kwargs, **kwargs)
 
@@ -73,12 +109,9 @@ def write(
     filename: Union[str, os.PathLike],
     *args: tuple,
     file_kwargs: Optional[Mapping] = None,
-    **kwargs: Mapping
+    **kwargs: Mapping,
 ) -> None:
-    ext = os.path.splitext(filename)[1]
-    handler = _HANDLERS.get(ext)
-    if not handler:
-        raise NotImplementedError()
+    handler = _get_handler(filename)
 
     handler.writer(obj, filename, *args, file_kwargs=file_kwargs, **kwargs)
 
