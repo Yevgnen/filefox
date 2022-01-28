@@ -138,4 +138,18 @@ def write(
     handler.writer(obj, filename, *args, file_kwargs=file_kwargs, **kwargs)
 
 
+__all__ = [
+    "read",
+    "write",
+    "read_json",
+    "write_json",
+    "read_pickle",
+    "write_pickle",
+    "read_toml",
+    "write_toml",
+    "BaseError",
+    "UnsupportedCompressionMethod",
+    "UnsupportedFileType",
+    "UnknownFileType",
+]
 __version__ = "0.3.0"
