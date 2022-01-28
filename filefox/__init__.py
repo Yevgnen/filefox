@@ -14,6 +14,29 @@ from typing import Any, Optional, Union
 
 import pytoml
 
+
+class BaseError(Exception):
+    pass
+
+
+class UnsupportedCompressionMethod(BaseError):
+    def __init__(self, *args, ext=None):
+        super().__init__(*args)
+        self.ext = ext
+
+
+class UnsupportedFileType(BaseError):
+    def __init__(self, *args, ext=None):
+        super().__init__(*args)
+        self.ext = ext
+
+
+class UnknownFileType(BaseError):
+    def __init__(self, *args, filename=None):
+        super().__init__(*args)
+        self.filename = filename
+
+
 _COMPRESSION = {
     ".bz2": bz2.open,
     ".gz": gzip.open,
@@ -73,7 +96,7 @@ _FILE_HANDLERS = {
 def _get_handler(filename):
     basename, compression_ext = os.path.splitext(filename)
     if not compression_ext:
-        raise ValueError("Unknown file type")
+        raise UnknownFileType("Failed to detect file type", filename=filename)
 
     basename, file_ext = os.path.splitext(basename)
     if not file_ext and compression_ext not in _COMPRESSION:
@@ -81,14 +104,13 @@ def _get_handler(filename):
         compression_ext = ""
 
     if compression_ext and compression_ext not in _COMPRESSION:
-        raise NotImplementedError()
-
-    if file_ext and file_ext not in _FILE_HANDLERS:
-        raise NotImplementedError()
+        raise UnsupportedCompressionMethod(
+            f"Unsupported compression method: {compression_ext}", ext=compression_ext
+        )
 
     handler = _FILE_HANDLERS.get(file_ext)
     if not handler:
-        raise NotImplementedError()
+        raise UnsupportedFileType(f"Unsupported file type: {file_ext}", ext=file_ext)
 
     return handler
 
