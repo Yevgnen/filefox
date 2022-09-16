@@ -47,33 +47,43 @@ pip install git+https://github.com/Yevgnen/filefox.git
 
 These functions have the following convention of their signatures:
 
-- For all readers, the first positional argument is always the filename.
-- For all writers, the first positional argument is always the dump object and the second is filename.
-- All functions accpet a keyword argument `file_kwargs` which is an optional `dict` will be unpacked and passed to file opening function, e.g. `open` . The other keyword arguments will be passed to internal load/dump functions.
-
 ``` python
 reader(filename, ..., file_kwargs=None, ...)
 writer(obj, filename, ..., file_kwargs=None, ...)
 ```
+
+- For all readers, the first positional argument is always the filename.
+- For all writers, the first positional argument is always the dump object and the second is filename.
+- All functions accpet a keyword argument `file_kwargs` which is an optional `dict` will be unpacked and passed to file opening function, e.g. `open` . The other keyword arguments will be passed to internal load/dump functions.
 
 ## Example
 
 ``` python
 # -*- coding: utf-8 -*-
 
-# See and run examples/example.py
-
 import filefox
 
-expected = {
+obj = {
     "name": "John",
     "age": 12,
 }
 
-assert expected == filefox.read_json("json_data.json")
-assert expected == filefox.read_json("json_data.json.gz")
-assert expected == filefox.read("json_data.json")
-assert expected == filefox.read("json_data.json.gz")
+filefox.write_json(obj, "json_data.json")
+assert obj == filefox.read_json("json_data.json")
+
+filefox.write_json(obj, "json_data.json.gz")
+assert obj == filefox.read_json("json_data.json.gz")
+
+filefox.write(obj, "json_data.json")
+assert obj == filefox.read("json_data.json")
+
+filefox.write(obj, "json_data.json.gz")
+assert obj == filefox.read("json_data.json.gz")
+
+filefox.write_json(
+    obj, "json_data.json", file_kwargs={"mode": "w", "encoding": "utf8"}, indent=2
+)
+assert obj == filefox.read_json("json_data.json", file_kwargs={"encoding": "utf8"})
 ```
 
 # Contribution
