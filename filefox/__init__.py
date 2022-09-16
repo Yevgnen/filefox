@@ -14,6 +14,8 @@ from typing import Any, Optional, Union
 
 import pytoml
 
+from filefox import text
+
 
 class BaseError(Exception):
     pass
@@ -79,6 +81,8 @@ read_pickle = _wrap_reader(pickle.load, default_mode="rb")
 write_pickle = _wrap_writer(pickle.dump, default_mode="wb")
 read_toml = _wrap_reader(pytoml.load)
 write_toml = _wrap_writer(pytoml.dump)
+read_text = _wrap_reader(text.load)
+write_text = _wrap_writer(text.dump)
 
 
 class _Handler(collections.namedtuple("_Handler", ["reader", "writer"])):
@@ -90,6 +94,7 @@ _FILE_HANDLERS = {
     ".pickle": _Handler(read_pickle, write_pickle),
     ".pkl": _Handler(read_pickle, write_pickle),
     ".toml": _Handler(read_toml, write_toml),
+    ".txt": _Handler(read_text, write_text),
 }
 
 
