@@ -47,6 +47,17 @@ pip install git+https://github.com/Yevgnen/filefox.git
 | ~read~         | Detect file extension, decompress when necessary, read file |
 | ~write~        | Detect file extension, compress when necessary, write file  |
 
+These functions have the following convention of their signatures:
+
+- For all readers, the first positional argument is always the filename.
+- For all writers, the first positional argument is always the dump object and the second is filename.
+- All functions accpet a keyword argument ~file_kwargs~ which is an optional ~dict~ will be unpacked and passed to file opening function, e.g. ~open~ . The other keyword arguments will be passed to internal load/dump functions.
+
+#+begin_src python
+reader(filename, ..., file_kwargs=None, ...)
+writer(obj, filename, ..., file_kwargs=None, ...)
+#+end_src
+
 ** Example
 
 #+include: examples/example.py src python
