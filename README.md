@@ -43,7 +43,7 @@ pip install git+https://github.com/Yevgnen/filefox.git
 | `read_toml`    | Reading text file                                           |
 | `write_toml`   | Writing text file                                           |
 | `read`         | Detect file extension, decompress when necessary, read file |
-| `write`        | Detect file extension, compress when necessary, write file  |
+| `write`        | Detect file extension, write file, compress when necessary  |
 
 These functions have the following convention of their signatures:
 
