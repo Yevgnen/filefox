@@ -1,5 +1,5 @@
 #+title: filefox
-#+options: ^:nil
+#+options: ^:nil author:nil title:nil
 
 * Table of Contents :TOC:
 - [[#introduction][Introduction]]

@@ -1,8 +1,3 @@
----
-author: Yevgnen Koh
-title: filefox
----
-
 # Table of Contents <span class="tag" tag-name="TOC"><span class="smallcaps">TOC</span></span>
 
 - [Introduction](#introduction)
