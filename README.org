@@ -6,12 +6,15 @@
 - [[#installation][Installation]]
   - [[#from-pip][From pip]]
   - [[#from-source][From source]]
+- [[#usages][Usages]]
+  - [[#readingwriting-functions][Reading/Writing functions]]
+  - [[#example][Example]]
 - [[#contribution][Contribution]]
   - [[#formatting-code][Formatting Code]]
 
 * Introduction
 
-~filefox~ is a helper toolbox for processing files.
+~filefox~ is a simple helper toolbox for reading and writing files.
 
 * Installation
 
@@ -26,6 +29,27 @@ pip install filefox
 #+begin_src sh
 pip install git+https://github.com/Yevgnen/filefox.git
 #+end_src
+
+* Usages
+
+** Reading/Writing functions
+
+| Function     | Description                                                 |
+|--------------+-------------------------------------------------------------|
+| ~read_json~    | Reading Json file                                           |
+| ~write_json~   | Writing Json file                                           |
+| ~read_pickle~  | Reading Pickle file                                         |
+| ~write_pickle~ | Writing Pickle file                                         |
+| ~read_toml~    | Reading Toml file                                           |
+| ~write_toml~   | Writing Toml file                                           |
+| ~read_toml~    | Reading text file                                           |
+| ~write_toml~   | Writing text file                                           |
+| ~read~         | Detect file extension, decompress when necessary, read file |
+| ~write~        | Detect file extension, compress when necessary, write file  |
+
+** Example
+
+#+include: examples/example.py src python
 
 * Contribution
 
